@@ -1,17 +1,24 @@
-from django.contrib.auth.models import Group, User
-from go_and_do_people_info.serializers import (GroupSerializer,
+from django.contrib.auth.models import Group
+from django.contrib.auth import get_user_model
+from go_and_do_people_info.models import Address, Ministry, UserProfile
+from go_and_do_people_info.serializers import (AddressSerializer,
+                                               GroupSerializer,
                                                MinistrySerializer,
                                                UserProfileSerializer,
                                                UserSerializer)
-from go_and_do_people_info.models import Ministry, UserProfile
 from rest_framework import viewsets
+from rest_auth.registration.views import RegisterView
 
+User = get_user_model()
+
+class CustomRegisterView(RegisterView):
+    queryset = User.objects.all()
 
 class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
-    queryset = User.objects.all().order_by('-date_joined')
+    queryset = User.objects.all()
     serializer_class = UserSerializer
 
 class GroupViewSet(viewsets.ModelViewSet):
@@ -28,3 +35,7 @@ class MinistryViewSet(viewsets.ModelViewSet):
 class UserProfileViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
+
+class AddressViewSet(viewsets.ModelViewSet):
+    queryset = Address.objects.all()
+    serializer_class = AddressSerializer

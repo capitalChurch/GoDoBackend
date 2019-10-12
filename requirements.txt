@@ -2,8 +2,9 @@ Django>=2.0,<3.0
 psycopg2>=2.7,<3.0
 djangorestframework
 django-filter
+django-rest-auth
+django-allauth
 Markdown
 django-phonenumber-field
 phonenumbers
-django-address
 pillow
