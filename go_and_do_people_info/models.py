@@ -76,6 +76,16 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return "{}".format(self.email)
 
+class Ministry(models.Model):
+    name = models.CharField(_('name'), max_length=100, unique=True, blank=False)
+    info = models.CharField(_('info'), max_length=255, blank=True)
+
+    class Meta:
+        ordering = ('name',)
+
+    def __str__(self):
+        return self.name
+
 class UserProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profile')
     address = models.ForeignKey('Address', on_delete=models.PROTECT, related_name='user')
@@ -86,7 +96,7 @@ class UserProfile(models.Model):
     is_member = models.BooleanField(_('member'), default=False)
     # member_since = models.DateTimeField(_('date member'), auto_now_add=False)
     # baptism_date = models.DateTimeField(_('date baptism'), auto_now_add=False)
-    # ministry = models.ManyToManyField(Ministry, related_name='ministries')
+    member_of = models.ManyToManyField(Ministry, related_name='user_in_ministry', through='MinistryMember')
     # avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
 
     REQUIRED_FIELDS = ['user']
@@ -114,13 +124,9 @@ class UserProfile(models.Model):
         '''
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
-class Ministry(models.Model):
-    name = models.CharField(_('name'), max_length=100, unique=True, blank=False)
-    info = models.CharField(_('info'), max_length=255, blank=True)
-    # users = 
-
-    class Meta:
-        ordering = ('name',)
-
-    def __str__(self):
-        return self.name
+class MinistryMember(models.Model):
+    member = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    ministry = models.ForeignKey(Ministry, on_delete=models.CASCADE)
+    role = models.CharField(max_length=40)
+    def __unicode__(self):
+        return self.member.name + " " + self.ministry.name + " - " + self.role

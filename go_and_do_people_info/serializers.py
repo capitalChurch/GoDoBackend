@@ -74,7 +74,9 @@ class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
             # 'member_since',
             # 'baptism_date',
             # 'ministries',
-            # 'avatar'
+            # 'avatar',
+            'member_of'
+
         ]
     
     user = UserSerializer(required=True)
@@ -90,8 +92,8 @@ class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
     # is_member = serializers.BooleanField(required=False)
     # member_since = serializers.DateTimeField(required=False)
     # baptism_date = serializers.DateTimeField(required=False)
-    # ministries = MinistrySerializer(required=False)
     # avatar = serializers.ImageField(required=False)
+    # member_of = MinistrySerializer(required=False)
 
     # def create(self, validated_data):
     #     """
