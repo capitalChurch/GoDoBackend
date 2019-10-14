@@ -8,3 +8,5 @@ Markdown
 django-phonenumber-field
 phonenumbers
 pillow
+django-rest-swagger
+pyyaml

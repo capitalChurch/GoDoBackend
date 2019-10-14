@@ -1,9 +1,12 @@
-from django.contrib.auth.models import User, Group
 from django.contrib.auth import get_user_model
-from rest_framework import serializers
-from go_and_do_people_info.models import UserProfile, Ministry, MinistryMember
+from django.contrib.auth.models import Group, User
+
+from go_and_do_people_info.models import (Country, Event, Ministry, News,
+                                          Prayer, Ticket, UserProfile,
+                                          Volunteer)
 from phonenumber_field import serializerfields
 from rest_auth.registration.serializers import RegisterSerializer
+from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
 User = get_user_model()
@@ -45,11 +48,6 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
             'groups',
         ]
 
-# class GroupSerializer(serializers.HyperlinkedModelSerializer):
-#     class Meta:
-#         model = Group
-#         fields = ['url', 'name']
-
 class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = UserProfile
@@ -73,19 +71,65 @@ class MinistrySerializer(serializers.ModelSerializer):
         model = Ministry
         fields = ['url', 'name', 'info']
     
-class MinistryMemberSerializer(serializers.HyperlinkedModelSerializer):
-    # members = serializers.PrimaryKeyRelatedField(queryset=Author.objects.all(), many=True)
+class VolunteerSerializer(serializers.HyperlinkedModelSerializer):
     member = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=False, read_only=False)
     ministry = serializers.PrimaryKeyRelatedField(queryset=Ministry.objects.all(), many=False, read_only=False)
     class Meta:
-        model = MinistryMember
+        model = Volunteer
         fields = ['url', 'member', 'ministry', 'is_leader']
         validators = [
             UniqueTogetherValidator(
-                queryset=MinistryMember.objects.all(),
+                queryset=Volunteer.objects.all(),
                 fields=['member', 'ministry']
             )
         ]
     
-    # def save()
+class CountrySerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Country
+        fields = ['url', 'name']
 
+
+class PrayerSerializer(serializers.HyperlinkedModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=False, read_only=False)
+    country = serializers.PrimaryKeyRelatedField(queryset=Country.objects.all(), many=False, read_only=False)
+    class Meta:
+        model = Prayer
+        fields = ['url', 'timestamp', 'user', 'country']
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Prayer.objects.all(),
+                fields=['timestamp', 'user', 'country']
+            )
+        ]
+
+class NewsSerializer(serializers.HyperlinkedModelSerializer):
+    author = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=False, read_only=False)
+    country = serializers.PrimaryKeyRelatedField(queryset=Country.objects.all(), many=False, read_only=False)
+    class Meta:
+        model = News
+        fields = ['url', 'title', 'text', 'timestamp', 'author', 'country']
+        validators = [
+            UniqueTogetherValidator(
+                queryset=News.objects.all(),
+                fields=['title', 'text', 'timestamp', 'author', 'country']
+            )
+        ]
+
+class EventSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Event
+        fields = ['url', 'name', 'datetime', 'description', 'venue']
+
+class TicketSerializer(serializers.HyperlinkedModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=False, read_only=False)
+    event = serializers.PrimaryKeyRelatedField(queryset=Event.objects.all(), many=False, read_only=False)
+    class Meta:
+        model = Ticket
+        fields = ['url', 'title', 'user', 'event', 'ticket_id', 'purchase_date', 'modified', 'price']
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Ticket.objects.all(),
+                fields=['title', 'event', 'ticket_id']
+            )
+        ]

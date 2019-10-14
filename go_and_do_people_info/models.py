@@ -1,4 +1,4 @@
-import re, datetime
+import re, datetime, uuid
 
 from django.core import validators
 from django.utils import timezone
@@ -88,8 +88,6 @@ class UserProfile(models.Model):
     state = models.CharField(_('state'), max_length=100, null=True)
     date_joined = models.DateTimeField(_('date joined'), auto_now_add=True)
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
-    # member_since = models.DateTimeField(_('date member'), auto_now_add=False)
-    # baptism_date = models.DateTimeField(_('date baptism'), auto_now_add=False)
 
     REQUIRED_FIELDS = [
             'user',
@@ -131,9 +129,60 @@ class Ministry(models.Model):
     def __str__(self):
         return self.name
 
-class MinistryMember(models.Model):
+class Volunteer(models.Model):
     member = models.ForeignKey(User, on_delete=models.CASCADE)
     ministry = models.ForeignKey(Ministry, on_delete=models.CASCADE)
     is_leader = models.BooleanField(_('leader'), default=False)
     def __unicode__(self):
         return self.member.name + " " + self.ministry.name
+
+class Country(models.Model):
+    name = models.CharField(_('country name'), max_length=30, unique=True)
+    REQUIRED_FIELDS = [
+        'name'
+    ]
+
+class Prayer(models.Model):
+    timestamp = models.DateTimeField(_('timestamp'), default=timezone.now)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    country = models.ForeignKey(Country, on_delete=models.CASCADE)
+
+class News(models.Model):
+    title = models.CharField(_('title name'), max_length=100, unique=True)
+    text = models.TextField(_('text'), max_length=1000)
+    timestamp = models.DateTimeField(_('timestamp'), default=timezone.now)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    country = models.ForeignKey(Country, on_delete=models.CASCADE)
+    REQUIRED_FIELDS = [
+        'title',
+        'text',
+        'author',
+        'country'
+    ]
+
+class Event(models.Model):
+    name = models.CharField(_('event name'), max_length=100, unique=True)
+    datetime = models.DateTimeField(_('datetime'), auto_now=True)
+    description = models.TextField(_('description'), max_length=200)
+    venue = models.CharField(_('event venue'), max_length=100, unique=False)
+    REQUIRED_FIELDS = [
+        'name',
+        'datetime',
+        'description',
+        'venue'
+    ]
+
+class Ticket(models.Model):
+    title = models.CharField(_('title'), max_length=255)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    ticket_id = models.CharField(_('ticket number'), max_length=255, blank=True)
+    purchase_date = models.DateTimeField(_('purchase date'), auto_now=True)
+    modified = models.DateTimeField(_('modified'), auto_now_add=True)
+    price = models.FloatField(_('title name'), null=False, default=0)
+
+    def save(self, *args, **kwargs):
+        if len(self.ticket_id.strip(" "))==0:
+            self.ticket_id = str(uuid.uuid4()).split("-")[-1]
+
+        super(Ticket, self).save(*args, **kwargs)

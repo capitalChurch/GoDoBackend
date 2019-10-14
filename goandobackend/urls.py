@@ -15,21 +15,34 @@ Including another URLconf
 """
 from django.urls import include, path
 
-from go_and_do_people_info.views import (MinistryMemberViewSet,
-                                         MinistryViewSet, UserProfileViewSet,
-                                         UserViewSet)
+from go_and_do_people_info.views import (CountryViewSet, EventViewSet,
+                                         MinistryViewSet, NewsViewSet,
+                                         PrayerViewSet, TicketViewSet,
+                                         UserProfileViewSet, UserViewSet,
+                                         VolunteerViewSet)
 from rest_framework import routers
+from django.conf.urls import url
+from rest_framework.schemas import get_schema_view
+from rest_framework_swagger.renderers import SwaggerUIRenderer, OpenAPIRenderer
+
+schema_view = get_schema_view(title='Users API')
 
 router = routers.DefaultRouter()
 router.register(r'users', UserViewSet)
 # router.register(r'groups', GroupViewSet)
 router.register(r'user_profiles', UserProfileViewSet)
 router.register(r'ministry', MinistryViewSet)
-router.register(r'ministry_member', MinistryMemberViewSet)
+router.register(r'volunteer', VolunteerViewSet)
+router.register(r'country', CountryViewSet)
+router.register(r'prayer', PrayerViewSet)
+router.register(r'news', NewsViewSet)
+router.register(r'event', EventViewSet)
+router.register(r'ticket', TicketViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-    path('', include(router.urls)),
+    url(r'^docs/', schema_view, name="docs"),
+    path('api/', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
