@@ -24,39 +24,159 @@ class CustomRegisterView(RegisterView):
 
 class UserViewSet(viewsets.ModelViewSet):
     """
-    API endpoint that allows users to be viewed or edited.
+    retrieve:
+        Return a user instance.
+
+    list:
+        Return all users, ordered by most recently joined.
+
+    create:
+        Create a new user.
+
+    delete:
+        Remove an existing user.
+
+    partial_update:
+        Update one or more fields on an existing user.
+
+    update:
+        Update a user.
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
 class MinistryViewSet(viewsets.ModelViewSet):
+    """
+    General API documentation (not wisible in the swagger view)
+
+    get:
+    GET-specific documentation!
+
+    Lorem ipsum
+
+    post:
+    POST-specific documentation!
+
+    Dolor **sit amet**
+    """
     queryset = Ministry.objects.all()
     serializer_class = MinistrySerializer
 
 class VolunteerViewSet(viewsets.ModelViewSet):
+    """
+    General API documentation (not wisible in the swagger view)
+
+    get:
+    GET-specific documentation!
+
+    Lorem ipsum
+
+    post:
+    POST-specific documentation!
+
+    Dolor **sit amet**
+    """
     queryset = Volunteer.objects.all()
     serializer_class = VolunteerSerializer
 
 class UserProfileViewSet(viewsets.ModelViewSet):
+    """
+    General API documentation (not wisible in the swagger view)
+
+    get:
+    GET-specific documentation!
+
+    Lorem ipsum
+
+    post:
+    POST-specific documentation!
+
+    Dolor **sit amet**
+    """
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
 
 class CountryViewSet(viewsets.ModelViewSet):
+    """
+    General API documentation (not wisible in the swagger view)
+
+    get:
+    GET-specific documentation!
+
+    Lorem ipsum
+
+    post:
+    POST-specific documentation!
+
+    Dolor **sit amet**
+    """
     queryset = Country.objects.all()
     serializer_class = CountrySerializer
 
 class PrayerViewSet(viewsets.ModelViewSet):
+    """
+    General API documentation (not wisible in the swagger view)
+
+    get:
+    GET-specific documentation!
+
+    Lorem ipsum
+
+    post:
+    POST-specific documentation!
+
+    Dolor **sit amet**
+    """
     queryset = Prayer.objects.all()
     serializer_class = PrayerSerializer
 
 class NewsViewSet(viewsets.ModelViewSet):
+    """
+    General API documentation (not wisible in the swagger view)
+
+    get:
+    GET-specific documentation!
+
+    Lorem ipsum
+
+    post:
+    POST-specific documentation!
+
+    Dolor **sit amet**
+    """
     queryset = News.objects.all()
     serializer_class = NewsSerializer
 
 class EventViewSet(viewsets.ModelViewSet):
+    """
+    General API documentation (not wisible in the swagger view)
+
+    get:
+    GET-specific documentation!
+
+    Lorem ipsum
+
+    post:
+    POST-specific documentation!
+
+    Dolor **sit amet**
+    """
     queryset = Event.objects.all()
     serializer_class = EventSerializer
 
 class TicketViewSet(viewsets.ModelViewSet):
+    """
+    General API documentation (not wisible in the swagger view)
+
+    get:
+    GET-specific documentation!
+
+    Lorem ipsum
+
+    post:
+    POST-specific documentation!
+
+    Dolor **sit amet**
+    """
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer

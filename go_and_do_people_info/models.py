@@ -162,7 +162,7 @@ class News(models.Model):
 
 class Event(models.Model):
     name = models.CharField(_('event name'), max_length=100, unique=True)
-    datetime = models.DateTimeField(_('datetime'), auto_now=True)
+    datetime = models.DateTimeField(_('datetime'))
     description = models.TextField(_('description'), max_length=200)
     venue = models.CharField(_('event venue'), max_length=100, unique=False)
     REQUIRED_FIELDS = [

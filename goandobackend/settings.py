@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'go_and_do_people_info',
     'phonenumber_field',
     'allauth',
+    'drf_yasg',
 ]
 SITE_ID = 1
 MIDDLEWARE = [

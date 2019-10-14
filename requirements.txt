@@ -10,3 +10,5 @@ phonenumbers
 pillow
 django-rest-swagger
 pyyaml
+coreapi
+drf-yasg

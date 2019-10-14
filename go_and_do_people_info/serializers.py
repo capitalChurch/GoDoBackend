@@ -72,8 +72,8 @@ class MinistrySerializer(serializers.ModelSerializer):
         fields = ['url', 'name', 'info']
     
 class VolunteerSerializer(serializers.HyperlinkedModelSerializer):
-    member = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=False, read_only=False)
-    ministry = serializers.PrimaryKeyRelatedField(queryset=Ministry.objects.all(), many=False, read_only=False)
+    member = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=False, read_only=False, help_text='Field documentation!')
+    ministry = serializers.PrimaryKeyRelatedField(queryset=Ministry.objects.all(), many=False, read_only=False, help_text='Field documentation!')
     class Meta:
         model = Volunteer
         fields = ['url', 'member', 'ministry', 'is_leader']
@@ -91,8 +91,8 @@ class CountrySerializer(serializers.HyperlinkedModelSerializer):
 
 
 class PrayerSerializer(serializers.HyperlinkedModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=False, read_only=False)
-    country = serializers.PrimaryKeyRelatedField(queryset=Country.objects.all(), many=False, read_only=False)
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=False, read_only=False, help_text='Field documentation!')
+    country = serializers.PrimaryKeyRelatedField(queryset=Country.objects.all(), many=False, read_only=False, help_text='Field documentation!')
     class Meta:
         model = Prayer
         fields = ['url', 'timestamp', 'user', 'country']
@@ -104,8 +104,8 @@ class PrayerSerializer(serializers.HyperlinkedModelSerializer):
         ]
 
 class NewsSerializer(serializers.HyperlinkedModelSerializer):
-    author = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=False, read_only=False)
-    country = serializers.PrimaryKeyRelatedField(queryset=Country.objects.all(), many=False, read_only=False)
+    author = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=False, read_only=False, help_text='Field documentation!')
+    country = serializers.PrimaryKeyRelatedField(queryset=Country.objects.all(), many=False, read_only=False, help_text='Field documentation!')
     class Meta:
         model = News
         fields = ['url', 'title', 'text', 'timestamp', 'author', 'country']
@@ -122,8 +122,8 @@ class EventSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['url', 'name', 'datetime', 'description', 'venue']
 
 class TicketSerializer(serializers.HyperlinkedModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=False, read_only=False)
-    event = serializers.PrimaryKeyRelatedField(queryset=Event.objects.all(), many=False, read_only=False)
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=False, read_only=False, help_text='Field documentation!')
+    event = serializers.PrimaryKeyRelatedField(queryset=Event.objects.all(), many=False, read_only=False, help_text='Field documentation!')
     class Meta:
         model = Ticket
         fields = ['url', 'title', 'user', 'event', 'ticket_id', 'purchase_date', 'modified', 'price']
