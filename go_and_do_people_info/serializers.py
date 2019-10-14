@@ -1,9 +1,10 @@
 from django.contrib.auth.models import User, Group
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from go_and_do_people_info.models import Ministry, UserProfile, Address
+from go_and_do_people_info.models import UserProfile, Ministry, MinistryMember
 from phonenumber_field import serializerfields
 from rest_auth.registration.serializers import RegisterSerializer
+from rest_framework.validators import UniqueTogetherValidator
 
 User = get_user_model()
 
@@ -11,8 +12,8 @@ class CustomRegisterSerializer(RegisterSerializer):
 
     email = serializers.EmailField(required=True)
     password1 = serializers.CharField(write_only=True)
-    name = serializers.CharField(required=True)
-    date_of_birth = serializers.DateField(required=True)
+    first_name = serializers.CharField(write_only=True)
+    last_name = serializers.CharField(write_only=True)
 
     def get_cleaned_data(self):
         super(CustomRegisterSerializer, self).get_cleaned_data()
@@ -20,43 +21,34 @@ class CustomRegisterSerializer(RegisterSerializer):
         return {
             'password1': self.validated_data.get('password1', ''),
             'email': self.validated_data.get('email', ''),
-            'name': self.validated_data.get('name', ''),
-            'date_of_birth': self.validated_data.get('date_of_birth', ''),
+            'first_name': self.validated_data.get('first_name', ''),
+            'last_name': self.validated_data.get('last_name', ''),
         }
 
 class CustomUserDetailsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('email','name','date_of_birth')
+        fields = ('email','first_name', 'last_name')
         read_only_fields = ('email',)
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = get_user_model()
-        fields = ['url', 'username', 'email', 'groups', 'first_name', 'last_name', 'date_of_birth', 'gender']
+        fields = [
+            'url',
+            'first_name',
+            'last_name',
+            'email',
+            'is_staff',
+            'is_active',
+            'groups',
+        ]
 
-
-class MinistrySerializer(serializers.HyperlinkedModelSerializer):
-    users = UserSerializer(many=True)
-    class Meta:
-        model = User
-        fields = ['url', 'name', 'info', 'users']
-
-class GroupSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Group
-        fields = ['url', 'name']
-
-class AddressSerializer(serializers.HyperlinkedModelSerializer):
-    zip_code = serializers.CharField(required=True, allow_blank=False, max_length=9)
-    street = serializers.CharField(required=True, allow_blank=False, max_length=100)
-    district = serializers.CharField(required=True, allow_blank=False, max_length=100)
-    city = serializers.CharField(required=True, allow_blank=False, max_length=100)
-    state = serializers.CharField(required=True, allow_blank=False, max_length=100)
-    class Meta:
-        model = Address
-        fields = ['url', 'zip_code', 'street', 'district', 'city', 'state', 'user']
+# class GroupSerializer(serializers.HyperlinkedModelSerializer):
+#     class Meta:
+#         model = Group
+#         fields = ['url', 'name']
 
 class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -64,51 +56,36 @@ class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
         fields = [
             'url',
             'user',
-            # 'phone_number',
-            'address',
-            # 'subscribed',
-            # 'date_joined',
-            # 'is_active',
-            'is_staff',
-            # 'is_member',
-            # 'member_since',
-            # 'baptism_date',
-            # 'ministries',
-            # 'avatar',
-            'member_of'
-
+            'date_of_birth',
+            'gender',
+            'phone_number',
+            'mobile_number',
+            'zip_code',
+            'street',
+            'district',
+            'city',
+            'state',
+            'date_joined',
+            'avatar',
+        ]
+class MinistrySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ministry
+        fields = ['url', 'name', 'info']
+    
+class MinistryMemberSerializer(serializers.HyperlinkedModelSerializer):
+    # members = serializers.PrimaryKeyRelatedField(queryset=Author.objects.all(), many=True)
+    member = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=False, read_only=False)
+    ministry = serializers.PrimaryKeyRelatedField(queryset=Ministry.objects.all(), many=False, read_only=False)
+    class Meta:
+        model = MinistryMember
+        fields = ['url', 'member', 'ministry', 'is_leader']
+        validators = [
+            UniqueTogetherValidator(
+                queryset=MinistryMember.objects.all(),
+                fields=['member', 'ministry']
+            )
         ]
     
-    user = UserSerializer(required=True)
-    # first_name = serializers.CharField(required=True, allow_blank=False)
-    # last_name = serializers.CharField(required=True, allow_blank=False)
-    # birth_date = serializers.DateTimeField(required=True)
-    # phone_number = serializerfields.PhoneNumberField(required=True)
-    address = AddressSerializer(required=True)
-    # subscribed = serializers.BooleanField(required=False)
-    # date_joined = serializers.DateTimeField(required=False)
-    # is_active = serializers.BooleanField(required=False)
-    is_staff = serializers.BooleanField(required=False)
-    # is_member = serializers.BooleanField(required=False)
-    # member_since = serializers.DateTimeField(required=False)
-    # baptism_date = serializers.DateTimeField(required=False)
-    # avatar = serializers.ImageField(required=False)
-    # member_of = MinistrySerializer(required=False)
+    # def save()
 
-    # def create(self, validated_data):
-    #     """
-    #     Create and return a new `Snippet` instance, given the validated data.
-    #     """
-    #     return UserProfile.objects.create(**validated_data)
-
-    # def update(self, instance, validated_data):
-    #     """
-    #     Update and return an existing `Snippet` instance, given the validated data.
-    #     """
-    #     instance.title = validated_data.get('title', instance.title)
-    #     instance.code = validated_data.get('code', instance.code)
-    #     instance.linenos = validated_data.get('linenos', instance.linenos)
-    #     instance.language = validated_data.get('language', instance.language)
-    #     instance.style = validated_data.get('style', instance.style)
-    #     instance.save()
-    #     return instance

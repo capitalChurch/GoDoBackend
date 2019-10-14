@@ -1,13 +1,13 @@
-from django.contrib.auth.models import Group
 from django.contrib.auth import get_user_model
-from go_and_do_people_info.models import Address, Ministry, UserProfile
-from go_and_do_people_info.serializers import (AddressSerializer,
-                                               GroupSerializer,
+from django.contrib.auth.models import Group
+
+from go_and_do_people_info.models import Ministry, MinistryMember, UserProfile
+from go_and_do_people_info.serializers import (MinistryMemberSerializer,
                                                MinistrySerializer,
                                                UserProfileSerializer,
                                                UserSerializer)
-from rest_framework import viewsets
 from rest_auth.registration.views import RegisterView
+from rest_framework import viewsets
 
 User = get_user_model()
 
@@ -21,21 +21,15 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-class GroupViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows groups to be viewed or edited.
-    """
-    queryset = Group.objects.all()
-    serializer_class = GroupSerializer
-
 class MinistryViewSet(viewsets.ModelViewSet):
     queryset = Ministry.objects.all()
     serializer_class = MinistrySerializer
+
+class MinistryMemberViewSet(viewsets.ModelViewSet):
+    queryset = MinistryMember.objects.all()
+    serializer_class = MinistryMemberSerializer
 
 class UserProfileViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
 
-class AddressViewSet(viewsets.ModelViewSet):
-    queryset = Address.objects.all()
-    serializer_class = AddressSerializer

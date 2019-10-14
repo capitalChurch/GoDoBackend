@@ -130,7 +130,8 @@ STATIC_URL = '/static/'
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10
+    'PAGE_SIZE': 10,
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
 }
 
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
@@ -143,6 +144,9 @@ ACCOUNT_USER_EMAIL_FIELD = 'email'
 ACCOUNT_LOGOUT_ON_GET = True
 
 AUTH_USER_MODEL = 'go_and_do_people_info.User'
+# AUTHENTICATION_BACKENDS = (
+# 'base.models.UserBackend',
+# )
 
 REST_AUTH_SERIALIZERS = {
     "USER_DETAILS_SERIALIZER": "go_and_do_people_info.serializers.CustomUserDetailsSerializer",
