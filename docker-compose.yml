@@ -1,14 +1,20 @@
 version: '3'
 
 services:
-  db:
+  pgDatabase:
     image: postgres
+    environment:
+      - POSTGRES_DB=capitalChurch
+      - POSTGRES_USER=goAndDo
+      - POSTGRES_PASSWORD=12345678
   web:
     build: .
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/code
+    environment:
+      - ConnectionString=Host=pgDatabase;Port=5432;Username=goAndDo;Password=12345678;Database=capitalChurch
     ports:
       - "8000:8000"
     depends_on:
-      - db
+      - pgDatabase

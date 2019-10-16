@@ -23,9 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'mq$npm!=4-pp=okjhzznqws90mp-@he!@r1b0$n)go)3f1u54o'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost']
 
 
 # Application definition
@@ -80,14 +80,18 @@ WSGI_APPLICATION = 'goandobackend.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-
+envDict = dict()
+for item in os.environ['ConnectionString'].split(';'):
+    k, v = item.split('=')
+    envDict[k] = v
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'HOST': 'db',
-        'PORT': 5432,
+        'NAME': envDict['Database'],
+        'USER': envDict['Username'],
+        'HOST': envDict['Host'],
+        'PORT': envDict['Port'],
+        'PASSWORD' : envDict['Password']
     }
 }
 
